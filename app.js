@@ -2,15 +2,23 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 require('dotenv').config()
+const { secret } = require('./crypto/config')
+const session = require('express-session')
+const usersRouter = require("./routes/users")
 
 const app = express()
 
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-app.get('/', (req, res) => {
-  res.send('Bienvenido a la aplicación JWT. Ve al login para comenzar.')
-})
+app.use(session({
+  secret: secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
+
+app.use("/", usersRouter)
 
 
 const PORT = process.env.PORT || 3000
