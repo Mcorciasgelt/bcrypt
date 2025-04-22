@@ -1,7 +1,7 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const user = require("../data/users")
+const users = require("../data/users")
 const { secret } = require("../crypto/config")
 const router = express.Router()
 
@@ -15,13 +15,13 @@ router.post("/login", (req, res) => {
         return res.status(401).json({ message: "Contraseñas Incorrecta" })
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, secret, {expiresIn: "1h" })
+    const token = jwt.sign({ id: user.id, username: user.username }, secret, {expiresIn: "10h" })
 
     res.json({ message: "Contraseña Correcta", token })
 })
 
 router.get("/dashboard", (req, res) => {
-    const token = req.header.authorization?.split("")[1]
+    const token = req.headers.authorization?.split(" ")[1]
 
     if(!token) {
         return res.status(401).json({ message: "no hya token" })
